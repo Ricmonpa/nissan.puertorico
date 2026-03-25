@@ -32,24 +32,13 @@
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
-            }
-            .scrollbar-hide {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-            }
-            .glass-panel {
-                @apply bg-black/55 backdrop-blur-lg border border-white/10;
-            }
-            .video-overlay {
-                background: linear-gradient(180deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.78) 35%, rgba(0,0,0,0.92) 100%);
-            }
+            .scrollbar-hide::-webkit-scrollbar { display: none; }
+            .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+            .glass-panel { @apply bg-black/55 backdrop-blur-lg border border-white/10; }
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             min-height: 100vh;
             font-family: "Inter", sans-serif;
             background-color: #f2f2f2;
@@ -59,12 +48,7 @@
             box-sizing: border-box;
         }
 
-        #ad-wrapper {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-            align-items: flex-start;
-        }
+        #ad-wrapper { display: flex; width: 100%; min-height: 100vh; align-items: flex-start; }
 
         #ad-panel {
             flex-shrink: 0;
@@ -82,20 +66,11 @@
             gap: 14px;
         }
 
-        .fake-content-block {
-            background: #d8d8d8;
-            border-radius: 6px;
-        }
+        .fake-content-block { background: #d8d8d8; border-radius: 6px; }
 
-        /* En móvil: solo se ve el ad, sin panel de contenido */
         @media (max-width: 600px) {
-            #ad-panel {
-                width: 100%;
-                padding: 12px;
-            }
-            #content-panel {
-                display: none;
-            }
+            #ad-panel { width: 100%; padding: 12px; }
+            #content-panel { display: none; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -119,15 +94,7 @@
             </button>
         </header>
 
-        <!-- VIDEO FIJO (siempre visible) -->
-        <div class="flex-shrink-0 relative overflow-hidden" style="height: 200px;">
-            <video id="bgVideo" autoplay loop muted playsinline class="w-full h-full object-cover">
-                <source src="./Puerto_Rico_Coastal_Drive_Video.mp4" type="video/mp4">
-            </video>
-            <div class="absolute bottom-0 left-0 right-0 h-10" style="background: linear-gradient(to bottom, transparent, #000);"></div>
-        </div>
-
-        <!-- CHAT (scrollable) -->
+        <!-- CHAT (scrollable, ocupa todo) -->
         <section id="chatSection" class="flex-1 overflow-y-auto scrollbar-hide px-3 py-3">
             <div id="chatMessages" class="space-y-3"></div>
         </section>
@@ -153,12 +120,10 @@
             </button>
         </div>
     </main>
-  </div><!-- /ad-panel -->
+  </div>
 
   <div id="content-panel">
-    <!-- Bloque imagen grande -->
     <div class="fake-content-block" style="height: 180px;"></div>
-    <!-- Líneas de texto simuladas -->
     <div class="fake-content-block" style="height: 18px; width: 85%;"></div>
     <div class="fake-content-block" style="height: 18px; width: 70%;"></div>
     <div class="fake-content-block" style="height: 18px; width: 90%;"></div>
@@ -167,201 +132,204 @@
     <div class="fake-content-block" style="height: 18px; width: 55%;"></div>
     <div class="fake-content-block" style="height: 18px; width: 75%;"></div>
     <div class="fake-content-block" style="height: 18px; width: 88%;"></div>
-  </div><!-- /content-panel -->
-</div><!-- /ad-wrapper -->
+  </div>
+</div>
 
-    <script>
-        const chatMessages = document.getElementById("chatMessages");
-        const chatSection = document.getElementById("chatSection");
-        const chatInput = document.getElementById("chatInput");
-        const sendButton = document.getElementById("sendButton");
+<script>
+    const chatMessages = document.getElementById("chatMessages");
+    const chatSection  = document.getElementById("chatSection");
+    const chatInput    = document.getElementById("chatInput");
+    const sendButton   = document.getElementById("sendButton");
 
-        const leadFormState = {
-            shown: false,
-            submitted: false
-        };
+    const leadFormState = { shown: false, submitted: false };
 
-        function escapeHtml(text) {
-            const div = document.createElement("div");
-            div.textContent = text;
-            return div.innerHTML;
-        }
+    function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
-        function scrollToBottom() {
-            requestAnimationFrame(() => {
-                chatSection.scrollTop = chatSection.scrollHeight;
-            });
-        }
+    function scrollToBottom() {
+        requestAnimationFrame(() => { chatSection.scrollTop = chatSection.scrollHeight; });
+    }
 
-        function createUserBubble(message) {
-            const userMessageDiv = document.createElement("div");
-            userMessageDiv.className = "flex justify-end w-full";
-            userMessageDiv.innerHTML = `
-                <div class="bg-white/95 text-black p-3 rounded-tr-none rounded-2xl max-w-[90%] shadow-lg border border-white/30">
-                    <p class="text-sm font-medium leading-snug">${escapeHtml(message)}</p>
+    // --- Burbuja: video embebido ---
+    function createVideoBubble() {
+        const div = document.createElement("div");
+        div.className = "w-full";
+        div.innerHTML = `
+            <div class="w-full rounded-2xl overflow-hidden" style="height: 190px; background:#111;">
+                <video id="chatVideo" autoplay loop muted playsinline
+                    class="w-full h-full object-cover"
+                    style="display:block;">
+                    <source src="./Puerto_Rico_Coastal_Drive_Video.mp4" type="video/mp4">
+                </video>
+            </div>
+        `;
+        chatMessages.appendChild(div);
+        // forzar play inmediato
+        const v = div.querySelector("video");
+        v.play().catch(() => {});
+    }
+
+    // --- Burbuja: texto del bot ---
+    function createBotBubble(message) {
+        const div = document.createElement("div");
+        div.className = "flex items-start gap-2 w-full";
+        div.innerHTML = `
+            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-nissan-red p-[2px] shadow-nissan-red overflow-hidden">
+                <img src="./nissan-logo.png" alt="Nissan" class="h-full w-full object-cover rounded-full"
+                    onerror="this.outerHTML='<div class=\'h-full w-full rounded-full bg-black flex items-center justify-center\'><span class=\'text-[10px] font-bold text-white tracking-wide\'>NIS</span></div>'">
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="glass-panel text-white p-3 rounded-tl-none rounded-2xl border-l-2 border-nissan-red">
+                    <p class="text-sm leading-snug">${escapeHtml(message)}</p>
                 </div>
-            `;
-            chatMessages.appendChild(userMessageDiv);
-        }
+            </div>
+        `;
+        chatMessages.appendChild(div);
+    }
 
-        function createBotBubble(message) {
-            const aiResponseDiv = document.createElement("div");
-            aiResponseDiv.className = "flex items-start gap-2 w-full";
-            aiResponseDiv.innerHTML = `
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-nissan-red p-[2px] shadow-nissan-red overflow-hidden">
-                    <img src="./nissan-logo.png" alt="Nissan" class="h-full w-full object-cover rounded-full" onerror="this.outerHTML='<div class=\'h-full w-full rounded-full bg-black flex items-center justify-center\'><span class=\'text-[10px] font-bold text-white tracking-wide\'>NIS</span></div>'">
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="glass-panel text-white p-3 rounded-tl-none rounded-2xl border-l-2 border-nissan-red">
-                        <p class="text-sm leading-snug">${escapeHtml(message)}</p>
-                    </div>
-                </div>
-            `;
-            chatMessages.appendChild(aiResponseDiv);
-        }
-
-        function submitLead(data) {
-            console.log("Lead enviado a CRM (simulado):", data);
-        }
-
-        function showLeadForm() {
-            if (leadFormState.shown || leadFormState.submitted) {
-                return;
-            }
-            leadFormState.shown = true;
-
-            const formWrapper = document.createElement("div");
-            formWrapper.id = "leadFormWrapper";
-            formWrapper.className = "w-full";
-            formWrapper.innerHTML = `
-                <div class="ml-12 glass-panel p-4 rounded-2xl border border-nissan-red/40 shadow-nissan-red">
-                    <p class="text-sm text-white font-semibold mb-3">Perfecto. Compárteme tus datos y te contactamos para agendar tu prueba de manejo.</p>
-                    <form id="leadForm" class="space-y-3">
-                        <div>
-                            <label for="leadName" class="block text-xs text-gray-300 mb-1">Nombre completo</label>
-                            <input id="leadName" name="name" type="text" required placeholder="Ej. María Pérez"
-                                class="w-full h-11 px-3 rounded-xl bg-black/70 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-nissan-red/70 focus:border-nissan-red" />
-                        </div>
-                        <div>
-                            <label for="leadPhone" class="block text-xs text-gray-300 mb-1">Teléfono</label>
-                            <input id="leadPhone" name="phone" type="tel" required placeholder="Ej. 787-555-1234"
-                                class="w-full h-11 px-3 rounded-xl bg-black/70 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-nissan-red/70 focus:border-nissan-red" />
-                        </div>
-                        <button type="submit" class="w-full h-11 rounded-xl bg-nissan-red hover:bg-[#a30027] text-white font-bold tracking-wide transition-colors">
-                            ENVIAR DATOS
-                        </button>
-                    </form>
-                </div>
-            `;
-
-            chatMessages.appendChild(formWrapper);
-            scrollToBottom();
-
-            const leadForm = document.getElementById("leadForm");
-            leadForm.addEventListener("submit", function(event) {
-                event.preventDefault();
-
-                const name = document.getElementById("leadName").value.trim();
-                const phone = document.getElementById("leadPhone").value.trim();
-
-                if (!name || !phone) {
-                    createBotBubble("Necesito tu nombre y teléfono para continuar con la solicitud.");
+    // --- Burbuja: botones rápidos ---
+    function createQuickButtons(buttons) {
+        const div = document.createElement("div");
+        div.id = "quickButtons";
+        div.className = "flex flex-col gap-2 pl-12";
+        buttons.forEach(label => {
+            const btn = document.createElement("button");
+            btn.className = "text-left bg-nissan-red/90 hover:bg-nissan-red text-white text-sm font-semibold px-4 py-2.5 rounded-full transition-colors shadow";
+            btn.textContent = label;
+            btn.onclick = () => {
+                div.remove();
+                createUserBubble(label);
+                scrollToBottom();
+                setTimeout(() => {
+                    const resp = generateLeadResponse(label);
+                    createBotBubble(resp.message);
+                    if (resp.showForm) showLeadForm();
+                    chatInput.focus();
                     scrollToBottom();
-                    return;
-                }
-
-                submitLead({ name, phone, source: "nissan-ai-copilot-banner" });
-                leadFormState.submitted = true;
-
-                const wrapper = document.getElementById("leadFormWrapper");
-                if (wrapper) {
-                    wrapper.remove();
-                }
-
-                createBotBubble(`Gracias, ${name}. Ya recibimos tu información y un asesor Nissan Puerto Rico te llamará pronto para confirmar tu prueba de manejo.`);
-                scrollToBottom();
-            });
-        }
-
-        function handleLeadIntent(userMessage) {
-            const normalized = userMessage.toLowerCase();
-            const interestKeywords = [
-                "interesa", "quiero", "prueba", "manejo", "kicks", "frontier",
-                "cotizacion", "cotización", "agendar", "agenda", "test drive", "me gusta"
-            ];
-            return interestKeywords.some((keyword) => normalized.includes(keyword));
-        }
-
-        function generateLeadResponse(userMessage) {
-            if (handleLeadIntent(userMessage) && !leadFormState.shown && !leadFormState.submitted) {
-                return {
-                    message: "Excelente. La nueva Nissan Kicks y la Frontier ya están listas para prueba de manejo. Completa este formulario y te contactamos hoy mismo.",
-                    showForm: true
-                };
-            }
-
-            if (leadFormState.submitted) {
-                return {
-                    message: "Tu solicitud ya quedó registrada. Si quieres, también puedo ayudarte a elegir entre Nissan Kicks o Frontier según tu estilo de manejo.",
-                    showForm: false
-                };
-            }
-
-            return {
-                message: "Puedo ayudarte a agendar tu prueba de manejo de la nueva Nissan Kicks o la Nissan Frontier. Dime cuál te interesa más y te guío.",
-                showForm: false
+                }, 400);
             };
-        }
+            div.appendChild(btn);
+        });
+        chatMessages.appendChild(div);
+    }
 
-        function sendMessage() {
-            const message = chatInput.value.trim();
-            if (!message) {
+    // --- Burbuja: usuario ---
+    function createUserBubble(message) {
+        const div = document.createElement("div");
+        div.className = "flex justify-end w-full";
+        div.innerHTML = `
+            <div class="bg-white/95 text-black p-3 rounded-tr-none rounded-2xl max-w-[90%] shadow-lg border border-white/30">
+                <p class="text-sm font-medium leading-snug">${escapeHtml(message)}</p>
+            </div>
+        `;
+        chatMessages.appendChild(div);
+    }
+
+    function submitLead(data) {
+        console.log("Lead enviado a CRM (simulado):", data);
+    }
+
+    function showLeadForm() {
+        if (leadFormState.shown || leadFormState.submitted) return;
+        leadFormState.shown = true;
+
+        const formWrapper = document.createElement("div");
+        formWrapper.id = "leadFormWrapper";
+        formWrapper.className = "w-full";
+        formWrapper.innerHTML = `
+            <div class="ml-12 glass-panel p-4 rounded-2xl border border-nissan-red/40 shadow-nissan-red">
+                <p class="text-sm text-white font-semibold mb-3">Perfecto. Compárteme tus datos y te contactamos para agendar tu prueba de manejo.</p>
+                <form id="leadForm" class="space-y-3">
+                    <div>
+                        <label for="leadName" class="block text-xs text-gray-300 mb-1">Nombre completo</label>
+                        <input id="leadName" name="name" type="text" required placeholder="Ej. María Pérez"
+                            class="w-full h-11 px-3 rounded-xl bg-black/70 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-nissan-red/70 focus:border-nissan-red" />
+                    </div>
+                    <div>
+                        <label for="leadPhone" class="block text-xs text-gray-300 mb-1">Teléfono</label>
+                        <input id="leadPhone" name="phone" type="tel" required placeholder="Ej. 787-555-1234"
+                            class="w-full h-11 px-3 rounded-xl bg-black/70 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-nissan-red/70 focus:border-nissan-red" />
+                    </div>
+                    <button type="submit" class="w-full h-11 rounded-xl bg-nissan-red hover:bg-[#a30027] text-white font-bold tracking-wide transition-colors">
+                        ENVIAR DATOS
+                    </button>
+                </form>
+            </div>
+        `;
+        chatMessages.appendChild(formWrapper);
+        scrollToBottom();
+
+        document.getElementById("leadForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const name  = document.getElementById("leadName").value.trim();
+            const phone = document.getElementById("leadPhone").value.trim();
+            if (!name || !phone) {
+                createBotBubble("Necesito tu nombre y teléfono para continuar.");
+                scrollToBottom();
                 return;
             }
-
-            createUserBubble(message);
-            chatInput.value = "";
-            chatInput.disabled = true;
-            sendButton.disabled = true;
+            submitLead({ name, phone, source: "nissan-ai-copilot-banner" });
+            leadFormState.submitted = true;
+            document.getElementById("leadFormWrapper")?.remove();
+            createBotBubble(`Gracias, ${name}. Ya recibimos tu información y un asesor Nissan Puerto Rico te llamará pronto para confirmar tu prueba de manejo.`);
             scrollToBottom();
-
-            setTimeout(() => {
-                const botResponse = generateLeadResponse(message);
-                createBotBubble(botResponse.message);
-
-                if (botResponse.showForm) {
-                    showLeadForm();
-                }
-
-                chatInput.disabled = false;
-                sendButton.disabled = false;
-                chatInput.focus();
-                scrollToBottom();
-            }, 450);
-        }
-
-        chatInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                sendMessage();
-            }
         });
+    }
 
-        window.addEventListener("load", () => {
-            createBotBubble("Hola, soy Nissan AI Co-Pilot. Te invito a agendar una prueba de manejo de la nueva Nissan Kicks o la Nissan Frontier. ¿Cuál te gustaría conocer primero?");
+    function handleLeadIntent(msg) {
+        const kw = ["interesa","quiero","prueba","manejo","kicks","frontier","cotizacion","cotización","agendar","agenda","test drive","me gusta"];
+        return kw.some(k => msg.toLowerCase().includes(k));
+    }
+
+    function generateLeadResponse(msg) {
+        if (handleLeadIntent(msg) && !leadFormState.shown && !leadFormState.submitted) {
+            return { message: "Excelente. La nueva Nissan Kicks y la Frontier ya están listas para prueba de manejo. Completa este formulario y te contactamos hoy mismo.", showForm: true };
+        }
+        if (leadFormState.submitted) {
+            return { message: "Tu solicitud ya quedó registrada. Si quieres, también puedo ayudarte a elegir entre Nissan Kicks o Frontier según tu estilo de manejo.", showForm: false };
+        }
+        return { message: "Puedo ayudarte a agendar tu prueba de manejo de la nueva Nissan Kicks o la Nissan Frontier. Dime cuál te interesa más.", showForm: false };
+    }
+
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        // quitar botones rápidos si aún están
+        document.getElementById("quickButtons")?.remove();
+
+        createUserBubble(message);
+        chatInput.value = "";
+        chatInput.disabled = true;
+        sendButton.disabled = true;
+        scrollToBottom();
+
+        setTimeout(() => {
+            const resp = generateLeadResponse(message);
+            createBotBubble(resp.message);
+            if (resp.showForm) showLeadForm();
+            chatInput.disabled = false;
+            sendButton.disabled = false;
             chatInput.focus();
             scrollToBottom();
-        });
+        }, 450);
+    }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const video = document.getElementById("bgVideo");
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    // Mantener silencioso si el navegador bloquea autoplay.
-                });
-            }
-        });
-    </script>
+    chatInput.addEventListener("keypress", e => {
+        if (e.key === "Enter") { e.preventDefault(); sendMessage(); }
+    });
+
+    // ── Inicialización inmediata ──
+    document.addEventListener("DOMContentLoaded", () => {
+        createVideoBubble();
+        createBotBubble("Hola, soy Nissan AI Co-Pilot. Te invito a agendar una prueba de manejo de la nueva Nissan Kicks o la Nissan Frontier. ¿Cuál te gustaría conocer primero?");
+        createQuickButtons(["Nissan Kicks", "Nissan Frontier", "Quiero más información"]);
+        scrollToBottom();
+        chatInput.focus();
+    });
+</script>
 </body>
 </html>
