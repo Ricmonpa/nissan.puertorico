@@ -2,9 +2,9 @@
 <html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=430, height=932, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
-    <meta name="ad.size" content="width=430,height=932">
+    <meta name="ad.size" content="width=390,height=700">
     <title>Nissan Puerto Rico - AI Co-Pilot</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -49,17 +49,22 @@
 
         body {
             margin: 0;
-            padding: 0;
+            padding: 16px;
             min-height: 100vh;
             font-family: "Inter", sans-serif;
-            background-color: #060606;
+            background-color: #f0f0f0;
+            background-image: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
             color: #e5e7eb;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            box-sizing: border-box;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <main class="absolute top-0 left-0 w-full max-w-[390px] h-[700px] bg-black rounded-[30px] overflow-hidden shadow-2xl border border-white/10 m-4">
+    <main class="relative w-full max-w-[390px] h-[700px] bg-black rounded-[30px] overflow-hidden border border-white/10" style="box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 2px 12px rgba(0,0,0,0.18);">
         <video id="bgVideo" autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover z-0">
             <source src="./Puerto_Rico_Coastal_Drive_Video.mp4" type="video/mp4">
         </video>
