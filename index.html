@@ -49,22 +49,61 @@
 
         body {
             margin: 0;
-            padding: 16px;
+            padding: 0;
             min-height: 100vh;
             font-family: "Inter", sans-serif;
-            background-color: #f0f0f0;
-            background-image: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+            background-color: #f2f2f2;
             color: #e5e7eb;
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
+            align-items: stretch;
             box-sizing: border-box;
+        }
+
+        #ad-wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            align-items: flex-start;
+        }
+
+        #ad-panel {
+            flex-shrink: 0;
+            width: 390px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        #content-panel {
+            flex: 1;
+            padding: 20px 24px;
+            background: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .fake-content-block {
+            background: #d8d8d8;
+            border-radius: 6px;
+        }
+
+        /* En móvil: solo se ve el ad, sin panel de contenido */
+        @media (max-width: 600px) {
+            #ad-panel {
+                width: 100%;
+                padding: 12px;
+            }
+            #content-panel {
+                display: none;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <main class="relative w-full max-w-[390px] h-[700px] bg-black rounded-[30px] overflow-hidden border border-white/10" style="box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 2px 12px rgba(0,0,0,0.18);">
+<div id="ad-wrapper">
+  <div id="ad-panel">
+    <main class="relative w-full h-[700px] bg-black rounded-[24px] overflow-hidden border border-white/10" style="box-shadow: 0 8px 40px rgba(0,0,0,0.30), 0 2px 12px rgba(0,0,0,0.15);">
         <video id="bgVideo" autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover z-0">
             <source src="./Puerto_Rico_Coastal_Drive_Video.mp4" type="video/mp4">
         </video>
@@ -107,6 +146,22 @@
             </button>
         </div>
     </main>
+  </div><!-- /ad-panel -->
+
+  <div id="content-panel">
+    <!-- Bloque imagen grande -->
+    <div class="fake-content-block" style="height: 220px;"></div>
+    <!-- Líneas de texto simuladas -->
+    <div class="fake-content-block" style="height: 18px; width: 85%;"></div>
+    <div class="fake-content-block" style="height: 18px; width: 70%;"></div>
+    <div class="fake-content-block" style="height: 18px; width: 90%;"></div>
+    <div class="fake-content-block" style="height: 18px; width: 60%;"></div>
+    <div class="fake-content-block" style="height: 18px; width: 80%;"></div>
+    <div class="fake-content-block" style="height: 18px; width: 55%;"></div>
+    <div class="fake-content-block" style="height: 18px; width: 75%;"></div>
+    <div class="fake-content-block" style="height: 18px; width: 88%;"></div>
+  </div><!-- /content-panel -->
+</div><!-- /ad-wrapper -->
 
     <script>
         const chatMessages = document.getElementById("chatMessages");
