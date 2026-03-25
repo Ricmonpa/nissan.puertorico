@@ -201,10 +201,8 @@
             const aiResponseDiv = document.createElement("div");
             aiResponseDiv.className = "flex items-start gap-2 w-full";
             aiResponseDiv.innerHTML = `
-                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-nissan-red/95 p-[2px] shadow-nissan-red">
-                    <div class="h-full w-full rounded-full bg-black flex items-center justify-center">
-                        <span class="text-[10px] font-bold text-white tracking-wide">NIS</span>
-                    </div>
+                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-nissan-red p-[2px] shadow-nissan-red overflow-hidden">
+                    <img src="./nissan-logo.png" alt="Nissan" class="h-full w-full object-cover rounded-full" onerror="this.outerHTML='<div class=\'h-full w-full rounded-full bg-black flex items-center justify-center\'><span class=\'text-[10px] font-bold text-white tracking-wide\'>NIS</span></div>'">
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="glass-panel text-white p-3 rounded-tl-none rounded-2xl border-l-2 border-nissan-red">
